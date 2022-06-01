@@ -75,15 +75,15 @@ void handleRoot()
 //Switch LED on and acknowledge
 void ledON()
 {
-  digitalWrite(LED_BUILTIN,1);
-  server.send(200, F("text/plain"), F("ON"));
-} //
+  digitalWrite(LED_BUILTIN,1); //outputs 1 for LED aka makes LED = True which makes LED light up
+  server.send(200, F("text/plain"), F("ON")); //i think this updates URL to be ...ip.../ON
+} 
 
-//Switch LED on and acknowledge
+//Switch LED off and acknowledge
 void ledOFF()
 {
-  digitalWrite(LED_BUILTIN,0);
-  server.send(200, F("text/plain"), F("OFF"));
+  digitalWrite(LED_BUILTIN,0); //outputs 0 for LED so LED = False so LED switches off
+  server.send(200, F("text/plain"), F("OFF")); //i think this updates URL to be ...ip.../ON
 }
 
 //Generate a 404 response with details of the failed request
@@ -104,57 +104,80 @@ void handleNotFound()
   server.send(404, F("text/plain"), message);
 }
 
-void setup()
+void setup() //Arduino Setup Routine which executes in the beginning ONCE.
 {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, 0);
+  pinMode(LED_BUILTIN, OUTPUT); //LED_BUILTIN is the name to a specific pin, so we configure this pin to output
+  digitalWrite(LED_BUILTIN, 0);//outputs 0 for LED so LED = False so LED switches off. So initially LED is off at startup
 
+//Set up the serial interface for debugging
+//These are the startup statements that are outputted
   Serial.begin(9600);
 
   //Wait 10s for the serial connection before proceeding
   //This ensures you can see messages from startup() on the monitor
+  //so this is just a time lag
   //Remove this for faster startup when the USB host isn't attached
   while (!Serial && millis() < 10000);  
 
+  //arduino has a built in timer and continues to run as the program works. So millis() outputs time in milliseconds
+  //so if serial.begin() is not 0 and program time is less than 10000ms then we start webserver
+  //so only between 9600-10000 do we do the webserver connections
+
+  //output the following statement to serial monitor
   Serial.println(F("\nStarting Web Server"));
 
   //Check WiFi shield is present
   if (WiFi.status() == WL_NO_SHIELD)
   {
     Serial.println(F("WiFi shield not present"));
-    while (true);
+    while (true); //so we loop in this state as long as this is true
   }
 
   //Configure the static IP address if group number is set
-  if (groupNumber)
+  if (groupNumber) //so if groupnumber != 0 aka is anything other than 0 we execute
     WiFi.config(IPAddress(192,168,0,groupNumber+1));
 
   // attempt to connect to WiFi network
   Serial.print(F("Connecting to WPA SSID: "));
   Serial.println(ssid);
-  while (WiFi.begin(ssid, pass) != WL_CONNECTED)
+  //the above 2 statements are all outputted to serial monitor
+
+  while (WiFi.begin(ssid, pass) != WL_CONNECTED) //wifi.begin() is used to connect to wifi network ssid using the password pass.
+  //so while loop repeats until wifi is connected which happens when Wifi.begin() = WL_CONNECTED
   {
-    delay(500);
-    Serial.print('.');
+    delay(500); //repeat reconnection function every 500ms
+    Serial.print('.'); //output . if doesn't connect
   }
 
   //Register the callbacks to respond to HTTP requests
+  //so this is similar to the URL thingy where at the end of the URL we check if its /on,/off do determine what function to execute
   server.on(F("/"), handleRoot);
   server.on(F("/on"), ledON);
+  //so we keep the website on the server by changing URL to /on and executing function ledON
   server.on(F("/off"), ledOFF);
+  //so server.on() executed a callback to function ledOFF if /off is present.
+  //server.handleClient() runs the necessary callback by doing the HTTP stuff and calling the required function
 
-  server.onNotFound(handleNotFound);
+  server.onNotFound(handleNotFound); //if no URL handle is found then we execute handleNotFound function
   
   server.begin();
   
   Serial.print(F("HTTP server started @ "));
   Serial.println(static_cast<IPAddress>(WiFi.localIP()));
+
+  //so we load in all the possible handlers into void setup(). 
+  //these handlers are in the form: server.on("/handleURL", handle func)
+  //so we execute handle func when URL has /handleURL attached to it. 
+  //each handle has its own func which is assigned elsewhere.
+  //the correct handle to be executed at the correct time is done in void loop() where 
+  //server.handleClient() checks current URL handle and executes the specific function.
+  //but we need to assign the handle to the handle func in the void setup ()
 }
 
 //Call the server polling function in the main loop
 void loop()
 {
   //Serial.print("Gah");
-  server.handleClient();
+  server.handleClient(); //
   //Serial.print("MMM");
 }
