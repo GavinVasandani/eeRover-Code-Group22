@@ -42,30 +42,35 @@ void setup(){
 }
 
 //Arduino loop routine - runs continuously after setup
+//so void loop is like the void main(), it executed continuously as long as the arduino is ON.
 void loop() {
-while(Wifi.available()){
+while(Wifi.available()){ //so as long as wifi is present/connected to EE Rover network, then execute.
     webproc();  //Process wifi requests
   }
-delay(500);  //If the connection breaks, wait and try again
+delay(500);  //If the connection breaks, wait and try again. //So we continuously recheck wifi until the arduino is actually switched off
 }
  
-void webproc() {
+void webproc() { //function that is executed when wifi is available and executed
   String command = Wifi.readStringUntil('/'); // read the first part of the URL (after arduino/)
   //Serial.println("URL RECIEVED");
   if (command == "web") {  // web is the url to access the webpage
-     command = Wifi.readStringUntil('/');
+  //so if the URL is: 196.02.10.16/web then the following is executed:
+     command = Wifi.readStringUntil('/'); //so we reassign command to the term after the next /
 
     Wifi.println(F("HTTP/1.1 200 OK"));
     Wifi.println(F("Content-Type: text/html"));
     Wifi.println();
     Wifi.println(F("<html>"));
     Wifi.print(F("<body>"));
-    if (command!=""){
-          if (command=="stop"){   //stop the motors
+    //we output this html page i think when command is 'web' as we want to output a webpage
+    if (command!=""){ //so if the URL is: 196.02.10.16/web/    , then this isn't executed
+    //if it is 196.02.10.16/web/... then it is executed
+          if (command=="stop"){   //stop the motors, so this is 196.02.10.16/web/stop
             analogWrite(PIN_PWML, 0);    
-            analogWrite(PIN_PWMR, 0);
+            analogWrite(PIN_PWMR, 0); //so these functions set motor power to 0 so motors are essentially switched off
+
           }else if (command=="detect") //detect and print the result in the webpage.
-          
+          //function prints the output of the detection so outputs what type of rock it is when detect is inputted through the URL
           { 
            
            for (int i=0; i<2; i++){
@@ -73,9 +78,12 @@ void webproc() {
           
             
           }else if (command=="l" or command=="f" or command=="r" or command=="b")  //rover has to move.
+          //the other possible URLs are all movement based
+          //so 196.02.10.16/web/l , moves rover left, 196.02.10.16/web/r , moves rover right...
+          
           { 
              Serial.println(F("got direction"));
-             movebug(command);
+             movebug(command); //runs movebug function
           }
   
           }
@@ -87,11 +95,11 @@ void movebug(String& movement){
 double y,x; //variables for the correct time/
 int denominator; 
 
-String com=Wifi.readStringUntil('/');
+String com=Wifi.readStringUntil('/'); //so this assigns the word after the second / to com
 
 if (movement == "l"){
       denominator=90;
-      digitalWrite(3, HIGH);  //Set the direction controls
+      digitalWrite(3, HIGH);  //Set the direction controls, so this ON the left motor and OFF the right
       digitalWrite(4, LOW);
    }else if (movement == "r"){
       denominator=90;
