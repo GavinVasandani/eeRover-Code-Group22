@@ -101,26 +101,31 @@ if (movement == "l"){
       denominator=90;
       digitalWrite(3, HIGH);  //Set the direction controls, so this ON the left motor and OFF the right
       digitalWrite(4, LOW);
-   }else if (movement == "r"){
+   }else if (movement == "r"){ //Motor configuration to move right
       denominator=90;
       digitalWrite(3, LOW);
       digitalWrite(4, HIGH);
-   }else if (movement == "f"){
+   }else if (movement == "f"){ //Motor config to move forward
       denominator=3;
       digitalWrite(3, HIGH);
       digitalWrite(4, HIGH); 
-   }else{
+   }else{ //Motor config to stop
       denominator=3;
       digitalWrite(3, LOW);
-      digitalWrite(4, LOW); }
-      
-     if (com=="ty"){ //onTouch just start the motors
-      analogWrite(PIN_PWML, motorSpeed);    
-      analogWrite(PIN_PWMR, motorSpeed); 
+      digitalWrite(4, LOW); 
+    }
+      //if com is nothing l,r,f then we check if it is ty for touch yes
+      //nvm we do the set of if statements above first and then the set of if statements below
+
+    if (com=="ty"){ //onTouch just start the motors
+      analogWrite(PIN_PWML, motorSpeed);  //so PIN to power left motor is assigned and the duty cycle is motorSpeed/255
+      analogWrite(PIN_PWMR, motorSpeed);  //same for right, so we essentially move in bursts based on motorSpeed (GO OVER)
      
-     }else{ //calculate desired time.
-      com=Wifi.readStringUntil('/');
-      x=com.toFloat();
+    }else{ //calculate desired time.
+      com=Wifi.readStringUntil('/'); //NOT SURE GO OVER
+      x=com.toFloat(); //maybe after URL so we do 196.02.16/l/ty/10 means we move left and touch yes for 10 seconds
+      //so we have analogue write which powers the motors continuously until the time y is done and then we reset.
+      //hence we only move for a specific amount of time
       y=x*(motorTime)/denominator;
       analogWrite(PIN_PWML, motorSpeed);    
       analogWrite(PIN_PWMR, motorSpeed);  
