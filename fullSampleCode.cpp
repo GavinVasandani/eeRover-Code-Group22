@@ -120,8 +120,8 @@ if (movement == "l"){
     if (com=="ty"){ //onTouch just start the motors
       analogWrite(PIN_PWML, motorSpeed);  //so PIN to power left motor is assigned and the duty cycle is motorSpeed/255
       analogWrite(PIN_PWMR, motorSpeed);  //same for right, so we essentially move in bursts based on motorSpeed (GO OVER)
-     
-    }else{ //calculate desired time.
+    }
+    else{ //calculate desired time.
       com=Wifi.readStringUntil('/'); //NOT SURE GO OVER
       x=com.toFloat(); //maybe after URL so we do 196.02.16/l/ty/10 means we move left and touch yes for 10 seconds
       //so we have analogue write which powers the motors continuously until the time y is done and then we reset.
