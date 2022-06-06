@@ -40,6 +40,42 @@ function moveFront() {xhttp.open(\"GET\", \"/f\"); xhttp.send();}\
 function moveStop() {xhttp.open(\"GET\", \"/stop\"); xhttp.send();}\
 </script></html>";
 
+//this is a custom webpage just to show current instruction is right
+const char webpageRight[] = 
+"<!DOCTYPE html>
+<html>
+<head> 
+    <title>Right</title>
+</head>
+</html>";
+
+//this is a custom webpage just to show current instruction is left
+const char webpageLeft[] = 
+"<!DOCTYPE html>
+<html>
+<head> 
+    <title>Left</title>
+</head>
+</html>";
+
+//this is a custom webpage just to show current instruction is front
+const char webpageFront[] = 
+"<!DOCTYPE html>
+<html>
+<head> 
+    <title>Front</title>
+</head>
+</html>";
+
+//this is a custom webpage just to show current instruction is stop
+const char webpageStop[] = 
+"<!DOCTYPE html>
+<html>
+<head> 
+    <title>Stop</title>
+</head>
+</html>";
+
 //handle function assignments
 //Return the web page
 void handleRoot()
@@ -48,6 +84,8 @@ void handleRoot()
 }
 
 void moveRight() {
+
+    server.send(200, F("text/html"), webpageRight);
     digitalWrite(3, LOW);
     digitalWrite(4, HIGH);
 
@@ -62,6 +100,8 @@ void moveRight() {
 }
 
 void moveLeft() {
+
+    server.send(200, F("text/html"), webpageLeft);
     digitalWrite(3, HIGH);
     digitalWrite(4, LOW);
 
@@ -75,6 +115,8 @@ void moveLeft() {
 }
 
 void moveFront() {
+
+    server.send(200, F("text/html"), webpageFront);
     digitalWrite(3, HIGH);
     digitalWrite(4, HIGH);
 
@@ -88,6 +130,8 @@ void moveFront() {
 }
 
 void moveStop() {
+
+    server.send(200, F("text/html"), webpageStop);
     digitalWrite(3, LOW);
     digitalWrite(4, LOW);
 
@@ -201,7 +245,6 @@ void setup() { //will contain the handles
     Serial.println(static_cast<IPAddress>(WiFi.localIP()));
     
 }
-
 
 void loop () { //function looped constantly
     server.handleClient(); //this command checks handle in URL and executes the required callback.
