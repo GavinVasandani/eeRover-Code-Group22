@@ -41,40 +41,16 @@ function moveStop() {xhttp.open(\"GET\", \"/stop\"); xhttp.send();}\
 </script></html>";
 
 //this is a custom webpage just to show current instruction is right
-const char webpageRight[] = 
-"<!DOCTYPE html>
-<html>
-<head> 
-    <title>Right</title>
-</head>
-</html>";
+const char webpageRight[] = "<html><body><h1>Right</h1></body></html>";
 
 //this is a custom webpage just to show current instruction is left
-const char webpageLeft[] = 
-"<!DOCTYPE html>
-<html>
-<head> 
-    <title>Left</title>
-</head>
-</html>";
+const char webpageLeft[] = "<html><body><h1>Left</h1></body></html>";
 
 //this is a custom webpage just to show current instruction is front
-const char webpageFront[] = 
-"<!DOCTYPE html>
-<html>
-<head> 
-    <title>Front</title>
-</head>
-</html>";
+const char webpageFront[] = "<html><body><h1>Front</h1></body></html>";
 
 //this is a custom webpage just to show current instruction is stop
-const char webpageStop[] = 
-"<!DOCTYPE html>
-<html>
-<head> 
-    <title>Stop</title>
-</head>
-</html>";
+const char webpageStop[] = "<html><body><h1>Stop</h1></body></html>";
 
 //handle function assignments
 //Return the web page
