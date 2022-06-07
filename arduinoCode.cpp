@@ -10,7 +10,7 @@ const char pass[] = "exhibition";
 const int groupNumber = 3;
 
 WiFiWebServer server(80);
-
+//he
 //Establishing the PIN numbers
 const int pin_DIRL = 3; //pin to switch ON and keep motor Left on HIGH so if ON then Direction L
 const int pin_DIRR = 4; //pin to switch ON and keep motor Right on HIGH so if ON then Direction R
