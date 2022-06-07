@@ -66,11 +66,11 @@ void moveRight() {
     digitalWrite(4, HIGH);
 
     //we can tweak these motorSpeed values so that they can be more customizable instead of a constant at 200
-    analogWrite(pin_PWML, motorSpeed);    
-    analogWrite(pin_PWMR, motorSpeed);  
+    //analogWrite(pin_PWML, motorSpeed);    
+    //analogWrite(pin_PWMR, motorSpeed);  
     delay(motorTime);                               //Run the motors for the specified time
-    analogWrite(pin_PWML, 0);    
-    analogWrite(pin_PWMR, 0);
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
 
     server.send(200, F("text/plain"), F("RIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
@@ -81,11 +81,11 @@ void moveLeft() {
     digitalWrite(3, HIGH);
     digitalWrite(4, LOW);
 
-    analogWrite(pin_PWML, motorSpeed);    
-    analogWrite(pin_PWMR, motorSpeed);  
+    //analogWrite(pin_PWML, motorSpeed);    
+    //analogWrite(pin_PWMR, motorSpeed);  
     delay(motorTime);                               //Run the motors for the specified time. This is in milliseconds
-    analogWrite(pin_PWML, 0);    
-    analogWrite(pin_PWMR, 0);
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
 
     server.send(200, F("text/plain"), F("LEFT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
@@ -96,11 +96,11 @@ void moveFront() {
     digitalWrite(3, HIGH);
     digitalWrite(4, HIGH);
 
-    analogWrite(pin_PWML, motorSpeed);    //so this switches on motor power for the intensity given by the motor speed
-    analogWrite(pin_PWMR, motorSpeed);  
+    //analogWrite(pin_PWML, motorSpeed);    //so this switches on motor power for the intensity given by the motor speed
+    //analogWrite(pin_PWMR, motorSpeed);  
     delay(motorTime);                               //Run the motors for the specified time
-    analogWrite(pin_PWML, 0);    
-    analogWrite(pin_PWMR, 0);
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
 
     server.send(200, F("text/plain"), F("FRONT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
@@ -111,11 +111,11 @@ void moveStop() {
     digitalWrite(3, LOW);
     digitalWrite(4, LOW);
 
-    analogWrite(pin_PWML, motorSpeed);    //so this switches on motor power for the intensity given by the motor speed
-    analogWrite(pin_PWMR, motorSpeed);  
+    //analogWrite(pin_PWML, motorSpeed);    //so this switches on motor power for the intensity given by the motor speed
+    //analogWrite(pin_PWMR, motorSpeed);  
     delay(motorTime);                               //Run the motors for the specified time
-    analogWrite(pin_PWML, 0);    
-    analogWrite(pin_PWMR, 0);
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
 
     server.send(200, F("text/plain"), F("STOP")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
