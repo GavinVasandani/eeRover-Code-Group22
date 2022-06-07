@@ -14,9 +14,10 @@ WiFiWebServer server(80);
 //Establishing the PIN numbers
 const int pin_DIRL = 3; //pin to switch ON and keep motor Left on HIGH so if ON then Direction L
 const int pin_DIRR = 4; //pin to switch ON and keep motor Right on HIGH so if ON then Direction R
-const int pin_PWML = 9; //pin to adjust power going to left motor using analogue write
-const int pin_PWMR = 10; //pin to adjust power going to right motor using analogue write
-int motorSpeed = 200;
+const int pin_PWML = 10; //pin to adjust power going to left motor using analogue write
+const int pin_PWMR = 9; //pin to adjust power going to right motor using analogue write
+int motorSpeedL = 200;
+int motorSpeedR = 220;
 double motorTime = 1000;
 
 //modifying webpage to include R, L, F, STOP
@@ -66,7 +67,7 @@ void moveRight() {
     //digitalWrite(4, HIGH);
 
     //we can tweak these motorSpeed values so that they can be more customizable instead of a constant at 200
-    analogWrite(pin_PWML, motorSpeed);    
+    analogWrite(pin_PWML, motorSpeedL);    
     analogWrite(pin_PWMR, 0);  
     delay(motorTime);                               //Run the motors for the specified time
     analogWrite(pin_PWML, 0);    
@@ -82,7 +83,7 @@ void moveLeft() {
     //digitalWrite(4, LOW);
 
     analogWrite(pin_PWML, 0);    
-    analogWrite(pin_PWMR, motorSpeed);  
+    analogWrite(pin_PWMR, motorSpeedR);  
     delay(motorTime);                               //Run the motors for the specified time. This is in milliseconds
     analogWrite(pin_PWML, 0);    
     analogWrite(pin_PWMR, 0);
@@ -96,8 +97,8 @@ void moveFront() {
     //digitalWrite(3, HIGH);
     //digitalWrite(4, HIGH);
 
-    analogWrite(pin_PWML, motorSpeed);    //so this switches on motor power for the intensity given by the motor speed
-    analogWrite(pin_PWMR, motorSpeed);  
+    analogWrite(pin_PWML, motorSpeedL);    //so this switches on motor power for the intensity given by the motor speed
+    analogWrite(pin_PWMR, motorSpeedR);  
     delay(motorTime);                               //Run the motors for the specified time
     analogWrite(pin_PWML, 0);    
     analogWrite(pin_PWMR, 0);
