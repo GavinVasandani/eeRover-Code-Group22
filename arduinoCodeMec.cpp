@@ -62,10 +62,22 @@ const char webpageFront[] = "<html><body><h1>Front</h1></body></html>";
 const char webpageStop[] = "<html><body><h1>Stop</h1></body></html>";
 
 //this is a custom webpage just to show current instruction is Back
-const char webpageBack[] = "<html><body><h1>Backt</h1></body></html>";
+const char webpageBack[] = "<html><body><h1>Back</h1></body></html>";
 
 //this is a custom webpage just to show current instruction is Turn
 const char webpageTurn[] = "<html><body><h1>Turn</h1></body></html>";
+
+//this is a custom webpage just to show current instruction is front
+const char webpageFrontRight[] = "<html><body><h1>Front-Right</h1></body></html>";
+
+//this is a custom webpage just to show current instruction is stop
+const char webpageFrontLeft[] = "<html><body><h1>Front-Left</h1></body></html>";
+
+//this is a custom webpage just to show current instruction is Back
+const char webpageBackLeft[] = "<html><body><h1>Back-Left</h1></body></html>";
+
+//this is a custom webpage just to show current instruction is Turn
+const char webpageBackRight[] = "<html><body><h1>Back-Right</h1></body></html>";
 
 //handle function assignments
 //Return the web page
@@ -178,6 +190,74 @@ void moveTurn() {
     server.send(200, F("text/plain"), F("TURN")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
 
+void moveFrontRight() {
+
+    server.send(200, F("text/html"), webpageFrontRight);
+    //digitalWrite(3, LOW);
+    //digitalWrite(4, LOW);
+
+    analogWrite(pin_PWMFL, motorSpeedL);    
+    analogWrite(pin_PWMFR, 0);  //FOR MOTOR TO TURN BACK/REVERSE WE USE (-) NEGATIVE MOTOR SPEED VALUE
+    analogWrite(pin_PWMBL, 0);
+    analogWrite(pin_PWMBR, motorSpeedR); 
+    //delay(motorTime);                               //Run the motors for the specified time
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
+
+    server.send(200, F("text/plain"), F("FRONTRIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
+}
+
+void moveFrontLeft() {
+
+    server.send(200, F("text/html"), webpageFrontLeft);
+    //digitalWrite(3, LOW);
+    //digitalWrite(4, LOW);
+
+    analogWrite(pin_PWMFL, 0);    
+    analogWrite(pin_PWMFR, motorSpeedR);  //FOR MOTOR TO TURN BACK/REVERSE WE USE (-) NEGATIVE MOTOR SPEED VALUE
+    analogWrite(pin_PWMBL, motorSpeedL);
+    analogWrite(pin_PWMBR, 0); 
+    //delay(motorTime);                               //Run the motors for the specified time
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
+
+    server.send(200, F("text/plain"), F("FRONTLEFT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
+}
+
+void moveBackRight() {
+
+    server.send(200, F("text/html"), webpageBackRight);
+    //digitalWrite(3, LOW);
+    //digitalWrite(4, LOW);
+
+    analogWrite(pin_PWMFL, -motorSpeedL);    
+    analogWrite(pin_PWMFR, 0);  //FOR MOTOR TO TURN BACK/REVERSE WE USE (-) NEGATIVE MOTOR SPEED VALUE
+    analogWrite(pin_PWMBL, 0);
+    analogWrite(pin_PWMBR, -motorSpeedR); 
+    //delay(motorTime);                               //Run the motors for the specified time
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
+
+    server.send(200, F("text/plain"), F("BACKRIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
+}
+
+void moveBackLeft() {
+
+    server.send(200, F("text/html"), webpageBackLeft);
+    //digitalWrite(3, LOW);
+    //digitalWrite(4, LOW);
+
+    analogWrite(pin_PWMFL, 0);    
+    analogWrite(pin_PWMFR, -motorSpeedR);  //FOR MOTOR TO TURN BACK/REVERSE WE USE (-) NEGATIVE MOTOR SPEED VALUE
+    analogWrite(pin_PWMBL, -motorSpeedL);
+    analogWrite(pin_PWMBR, 0); 
+    //delay(motorTime);                               //Run the motors for the specified time
+    //analogWrite(pin_PWML, 0);    
+    //analogWrite(pin_PWMR, 0);
+
+    server.send(200, F("text/plain"), F("BACKLEFT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
+}
+
 //Generate a 404 response with details of the failed request
 void handleNotFound()
 {
@@ -273,6 +353,18 @@ void setup() { //will contain the handles
 
     //handle situation if input is TURN (turn)
     server.on(F("/turn"), moveTurn);
+
+    //handle situation if input is FRONTRIGHT (FR)
+    server.on(F("/fr"), moveFrontRight);
+
+    //handle situation if input is FRONTLEFT (FL)
+    server.on(F("/fl"), moveFrontLeft);
+
+    //handle situation if input is BACKRIGHT (BR)
+    server.on(F("/br"), moveBackRight);
+
+    //handle situation if input is BACKLEFT (BL)
+    server.on(F("/bl"), moveBackLeft);
 
     //so essentially we will go in one of these directions, so once we click button we continue in this path, until we hit stop or another button which sends a new URL.
 
