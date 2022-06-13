@@ -27,7 +27,17 @@ int motorSpeedR = 220;
 double motorTime = 1000;
 
 //modifying webpage to include R, L, F, STOP
-const char webpageHome[] = "<html><body><h1>Hello! Welcome to Rover!</h1></body></html>";
+const char webpageHome[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Welcome to Rover!</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 const char webpage[] = "<html><head><style>\
 .btn {background-color: inherit;padding: 100px 100px;font-size: 50px;}\
@@ -53,34 +63,134 @@ function moveStop() {xhttp.open(\"GET\", \"/stop\"); xhttp.send();}\
 //MAYBE NOT NECESSARY
 
 //this is a custom webpage just to show current instruction is right
-const char webpageRight[] = "<html><body><h1>Right</h1></body></html>";
+const char webpageRight[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Right</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is left
-const char webpageLeft[] = "<html><body><h1>Left</h1></body></html>";
+const char webpageLeft[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Left</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is front
-const char webpageFront[] = "<html><body><h1>Front</h1></body></html>";
+const char webpageFront[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Front</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is stop
-const char webpageStop[] = "<html><body><h1>Stop</h1></body></html>";
+const char webpageStop[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Stop</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is Back
-const char webpageBack[] = "<html><body><h1>Back</h1></body></html>";
+const char webpageBack[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Back</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is Turn
-const char webpageTurn[] = "<html><body><h1>Turn</h1></body></html>";
+const char webpageTurn[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Turn</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is front
-const char webpageFrontRight[] = "<html><body><h1>Front-Right</h1></body></html>";
+const char webpageFrontRight[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Front-Right</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is stop
-const char webpageFrontLeft[] = "<html><body><h1>Front-Left</h1></body></html>";
+const char webpageFrontLeft[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Front-Left</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is Back
-const char webpageBackLeft[] = "<html><body><h1>Back-Left</h1></body></html>";
+const char webpageBackLeft[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Back-Left</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //this is a custom webpage just to show current instruction is Turn
-const char webpageBackRight[] = "<html><body><h1>Back-Right</h1></body></html>";
+const char webpageBackRight[] = 
+"<html>
+    <body>
+        <p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Back-Right</p>   
+          
+        <style>    h1 {text-align: center;}
+            p {text-align: center;}
+            div {text-align: center;} 
+            </style>
+    </body>
+</html>";
 
 //handle function assignments
 //Return the web page
