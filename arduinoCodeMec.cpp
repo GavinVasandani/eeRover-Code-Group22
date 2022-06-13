@@ -12,12 +12,15 @@ const int groupNumber = 3;
 WiFiWebServer server(80);
 //he
 //Establishing the PIN numbers
-const int pin_DIRL = 3; //pin to switch ON and keep motor Left on HIGH so if ON then Direction L
-const int pin_DIRR = 4; //pin to switch ON and keep motor Right on HIGH so if ON then Direction R
-const int pin_PWMFL = 10; //FRONT LEFT - pin to adjust power going to FRONT LEFT motor using analogue write
-const int pin_PWMFR = 9; //FRONT RIGHT - pin to adjust power going to FRONT RIGHT right motor using analogue write
-const int pin_PWMBL = 8; //BACK LEFT - pin to adjust power going to BACK LEFT motor using analogue write
-const int pin_PWMBR = 7; //BACK RIGHT - pin to adjust power going to BACK RIGHT motor using analogue write
+const int pin_DIRFL = 5; //pin to switch ON and keep motor Left on HIGH so if ON then Direction L
+const int pin_DIRFR = 6; //pin to switch ON and keep motor Right on HIGH so if ON then Direction R
+const int pin_DIRBL = 9; //pin to switch ON and keep motor Left on HIGH so if ON then Direction L
+const int pin_DIRBR = 10; //pin to switch ON and keep motor Right on HIGH so if ON then Direction R
+
+const int pin_PWMFL = 3; //FRONT LEFT - pin to adjust power going to FRONT LEFT motor using analogue write
+const int pin_PWMFR = 4; //FRONT RIGHT - pin to adjust power going to FRONT RIGHT right motor using analogue write
+const int pin_PWMBL = 7; //BACK LEFT - pin to adjust power going to BACK LEFT motor using analogue write
+const int pin_PWMBR = 8; //BACK RIGHT - pin to adjust power going to BACK RIGHT motor using analogue write
 
 int motorSpeedL = 200;
 int motorSpeedR = 220;
@@ -125,16 +128,16 @@ void moveLeft() {
 void moveFront() {
 
     server.send(200, F("text/html"), webpageFront);
-    //digitalWrite(3, HIGH);
-    //digitalWrite(4, HIGH);
+
+    digitalWrite(pin_DIRBL, LOW);
+    digitalWrite(pin_DIRBR, LOW);
+    digitalWrite(pin_DIRFL, LOW);
+    digitalWrite(pin_DIRFR, LOW);
 
     analogWrite(pin_PWMFL, motorSpeedL);    
     analogWrite(pin_PWMFR, motorSpeedR);  //FOR MOTOR TO TURN BACK/REVERSE WE USE (-) NEGATIVE MOTOR SPEED VALUE
     analogWrite(pin_PWMBL, motorSpeedL);
     analogWrite(pin_PWMBR, motorSpeedR);  
-    //delay(motorTime);                               //Run the motors for the specified time
-    //analogWrite(pin_PWML, 0);    
-    //analogWrite(pin_PWMR, 0);
 
     server.send(200, F("text/plain"), F("FRONT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
