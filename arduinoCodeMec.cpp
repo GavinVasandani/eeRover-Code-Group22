@@ -27,7 +27,7 @@ int motorSpeedR = 220;
 double motorTime = 1000;
 
 //modifying webpage to include R, L, F, STOP
-const char webpageHome[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Welcome to Rover!</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageHome[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Welcome to Rover!</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 const char webpage[] = "<html><head><style>\
 .btn {background-color: inherit;padding: 100px 100px;font-size: 50px;}\
