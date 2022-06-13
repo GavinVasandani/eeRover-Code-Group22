@@ -53,34 +53,34 @@ function moveStop() {xhttp.open(\"GET\", \"/stop\"); xhttp.send();}\
 //MAYBE NOT NECESSARY
 
 //this is a custom webpage just to show current instruction is right
-const char webpageRight[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageRight[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is left
-const char webpageLeft[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Left</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageLeft[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Left</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is front
-const char webpageFront[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Front</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageFront[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Front</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is stop
-const char webpageStop[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Stop</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageStop[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Stop</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is Back
-const char webpageBack[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Back</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageBack[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Back</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is Turn
-const char webpageTurn[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Turn</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageTurn[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Turn</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is front
-const char webpageFrontRight[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Front-Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageFrontRight[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Front-Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is stop
-const char webpageFrontLeft[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Front-Left</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageFrontLeft[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Front-Left</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is Back
-const char webpageBackLeft[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Back-Left</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageBackLeft[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Back-Left</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is Turn
-const char webpageBackRight[] = "<html><body><p style="font-size:10vw; padding: 10px; border: 5px solid red;">Current Instruction is: Back-Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageBackRight[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Back-Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //handle function assignments
 //Return the web page
@@ -129,10 +129,10 @@ void moveFront() {
 
     server.send(200, F("text/html"), webpageFront);
 
-    digitalWrite(pin_DIRBL, LOW);
-    digitalWrite(pin_DIRBR, LOW);
-    digitalWrite(pin_DIRFL, LOW);
-    digitalWrite(pin_DIRFR, LOW);
+    //digitalWrite(pin_DIRBL, LOW);
+    //digitalWrite(pin_DIRBR, LOW);
+    //digitalWrite(pin_DIRFL, LOW);
+    //digitalWrite(pin_DIRFR, LOW);
 
     analogWrite(pin_PWMFL, motorSpeedL);    
     analogWrite(pin_PWMFR, motorSpeedR);  //FOR MOTOR TO TURN BACK/REVERSE WE USE (-) NEGATIVE MOTOR SPEED VALUE
@@ -282,8 +282,10 @@ void handleNotFound()
 void setup() { //will contain the handles
 
 //configuring the pins to OUTPUT:
-    pinMode(pin_DIRL, OUTPUT);
-    pinMode(pin_DIRR, OUTPUT);
+    pinMode(pin_DIRFL, OUTPUT);
+    pinMode(pin_DIRFR, OUTPUT);
+    pinMode(pin_DIRBL, OUTPUT);
+    pinMode(pin_DIRBR, OUTPUT);
     pinMode(pin_PWMFL, OUTPUT);
     pinMode(pin_PWMFR, OUTPUT);
     pinMode(pin_PWMBL, OUTPUT);
