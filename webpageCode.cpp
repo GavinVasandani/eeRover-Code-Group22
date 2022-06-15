@@ -17,3 +17,5 @@ function moveLeft() {xhttp.open(\"GET\", \"/l\"); xhttp.send();}\
 function moveFront() {xhttp.open(\"GET\", \"/f\"); xhttp.send();}\
 function moveStop() {xhttp.open(\"GET\", \"/stop\"); xhttp.send();}\
 </script></html>";
+
+cout<<webpage;
