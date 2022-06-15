@@ -25,6 +25,16 @@ const int pin_PWMFL = 6;
 const int pin_PWMBR = 11;
 const int pin_PWMBL = 12;
 
+const int pinMagnetic = A0;
+const int pinIR = A0;
+
+int northCount = 0;
+int southCount = 0;
+int noneCount = 0;
+
+int SAMPLE_CYCLE = 5;     // number of complete periods we sample and take median of
+bool sampling_flag = false;
+
 int motorSpeed = 200;
 //int motorSpeedR = 220;
 double motorTime = 1000;
@@ -84,6 +94,22 @@ const char webpageBackLeft[] = "<html><body><p style=\"font-size:10vw; padding: 
 
 //this is a custom webpage just to show current instruction is Turn
 const char webpageBackRight[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Back-Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetect[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Detecting...</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetectG[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Gaborium</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetectL[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Lathwaite</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetectA[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Adamantine</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetectX[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Xirang</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetectT[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Thiotimoline</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetectN[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Netherite</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageDetectN[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock Undetectable</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //handle function assignments
 //Return the web page
@@ -285,6 +311,178 @@ void moveBackLeft() { //DONE
     server.send(200, F("text/plain"), F("BACKLEFT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
 
+//Magnetic Sensor Code
+string magneticSensor() {
+
+    string magDirect;
+      long measure = 0;
+  for(int i = 0; i < 10; i++){
+      int value = 
+      measure += analogRead(pinMagnetic);
+  }
+  measure /= 10;  
+  //voltage in mV
+  float outputV = measure * 5000.0 / 1023;
+  Serial.print("Output Voltage = ");
+  Serial.print(outputV);
+  Serial.println(" mV   ");
+  
+  //flux density
+  float magneticFlux =  (outputV * 53.33 - 133.3)-79160.39;
+  Serial.print("Magnetic Flux Density = ");
+  Serial.print(magneticFlux);
+  Serial.println(" mT");  
+  delay(2000);
+
+  if (magneticFlux > 140699.06){
+    //magDirect = "South";
+    southCount += 1;
+    northCount = 0;
+    noneCount = 0; 
+    //Serial.println("South");
+  }
+  else if(magneticFlux < 139499.06){
+    //magDirect = "North";
+    northCount += 1; 
+    southCount = 0;
+    noneCount = 0;
+    //Serial.println("North");
+  }
+  else{
+    //magDirect = "None";
+    noneCount += 1;
+    northCount = 0;
+    southCount = 0;
+    //Serial.println("None");
+  }
+
+  if (northCount == 3) {
+      Serial.println("Average of 3 is: North");
+      northCount = 0; 
+      magDirect = "North";
+      return magDirect;
+  }
+  else if (southCount == 3) {
+      Serial.println("Average of 3 is: South");
+      southCount = 0; 
+      magDirect = "South";
+      return magDirect;
+  }
+  else if (noneCount == 3) {
+      Serial.println("Average of 3 is: None");
+      noneCount = 0; 
+      magDirect = "None";
+      return magDirect;
+  }
+
+}
+
+//IR Sensor Code
+void StartSample()
+{
+  sampling_flag = true;
+}
+
+double irSensor () {
+
+  long total_duration = 0;
+  double frequency = 0;
+  long total_duration_averaged = 0;  
+  if (sampling_flag) {
+    // starts sampling the values into samples
+    for (int i = 0; i < SAMPLE_CYCLE; i++) {
+      long low_duration = pulseIn(pinIR, LOW);
+      long high_duration = pulseIn(pinIR, HIGH);
+      total_duration += high_duration + low_duration;
+      Serial.println(low_duration);
+      Serial.println(high_duration);
+      Serial.println(total_duration);
+    }
+    // takes median of the samples
+    total_duration_averaged = total_duration / SAMPLE_CYCLE;
+    Serial.println("total_duration_averaged");
+    Serial.println(total_duration_averaged);
+    frequency = 1000000.0 / total_duration_averaged;
+
+    sampling_flag = false;
+    // prints the median value
+    Serial.print("frequency: ");
+    Serial.println(frequency);
+    Serial.println();
+    return frequency; 
+  }
+  else {
+    // set sample flag to true if input an 'a'
+    if (Serial.available() > 0) {
+      char input = Serial.read();
+      if (input == 'a') {
+        StartSample();
+      }
+    }
+  }
+  delay(500);
+
+}
+
+int ultrasonicSensor () {
+
+}
+
+int radioSensor () {
+
+}
+
+
+void detect() {
+
+    server.send(200, F("text/html"), webpageDetect);
+
+    string magDirect = magneticSensor(); //Checks magnetic sensor
+
+    double irVal = irSensor();
+
+    int acousticVal = ultrasonicSensor();
+
+    int radioVal = radioSensor();
+
+    //Adamantine
+    if (magDirect == "North") {
+        server.send(200, F("text/html"), webpageDetectA); 
+    }
+
+    //Xirang
+    else if (magDirect == "South") {
+        server.send(200, F("text/html"), webpageDetectX);
+    }
+
+    //Thiotimoline
+    else if (irVal == 353) {
+        server.send(200, F("text/html"), webpageDetectT);
+    }
+
+    //Netherite
+    else if (irVal == 571 && acousticVal == 40) {
+        server.send(200, F("text/html"), webpageDetectN);
+    }
+    //to get to this point the magnetic sensor must be none so ignore 81khz input possibilities
+    //gaborium
+    else if (radioVal == 151) {
+        server.send(200, F("text/html"), webpageDetectG);
+    }
+
+    //lathwaite
+    else if (radioVal == 239) { //maybe 
+        server.send(200, F("text/html"), webpageDetectL);
+    }
+
+    else {
+        server.send(200, F("text/html"), webpageDetectError);
+    }
+
+    server.send(200, F("text/plain"), F("DETECT"));
+
+}
+
 //Generate a 404 response with details of the failed request
 void handleNotFound()
 {
@@ -307,6 +505,7 @@ void setup() { //will contain the handles
 
 //configuring the pins to OUTPUT:
   Serial.begin(9600);
+
   pinMode(pin_DIRFR, OUTPUT);
   pinMode(pin_DIRFL, OUTPUT);
   pinMode(pin_DIRBR, OUTPUT);
@@ -315,7 +514,10 @@ void setup() { //will contain the handles
   pinMode(pin_PWMFR, OUTPUT);
   pinMode(pin_PWMFL, OUTPUT);
   pinMode(pin_PWMBR, OUTPUT);
-  pinMode(pin_PWMBL, OUTPUT);  
+  pinMode(pin_PWMBL, OUTPUT); 
+
+  pinMode(pinMagnetic, INPUT);
+  pinMode(pinIR, INPUT); 
   
     Serial.println("Hello! This is Rover!");
 
