@@ -4,6 +4,7 @@
 #define USE_WIFI_NINA         false
 #define USE_WIFI101           true
 #include <WiFiWebServer.h>
+#include <LiquidCrystal.h>
 
 const char ssid[] = "EEERover";
 const char pass[] = "exhibition";
@@ -26,14 +27,20 @@ const int pin_PWMBR = 11;
 const int pin_PWMBL = 12;
 
 const int pinMagnetic = A0;
-const int pinIR = A0;
+const int pinIR = A1;
+const int pinRadio = 1;
+const int pinUltra = 7;
 
 int northCount = 0;
 int southCount = 0;
 int noneCount = 0;
 
 int SAMPLE_CYCLE = 5;     // number of complete periods we sample and take median of
-bool sampling_flag = false;
+bool DEBUG_MODE = false;
+
+double FrequencyTolerance = 75.0;
+double ThiotimolineFrequency = 353.0;
+double NetheriteFrequency = 571.0;
 
 int motorSpeed = 200;
 //int motorSpeedR = 220;
@@ -109,7 +116,7 @@ const char webpageDetectT[] = "<html><body><p style=\"font-size:10vw; padding: 1
 
 const char webpageDetectN[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Netherite</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectN[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock Undetectable</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetectError[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock Undetectable</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //handle function assignments
 //Return the web page
@@ -312,9 +319,9 @@ void moveBackLeft() { //DONE
 }
 
 //Magnetic Sensor Code
-string magneticSensor() {
+String magneticSensor() {
 
-    string magDirect;
+    String magDirect;
       long measure = 0;
   for(int i = 0; i < 10; i++){
       int value = 
@@ -374,61 +381,119 @@ string magneticSensor() {
       magDirect = "None";
       return magDirect;
   }
+  else {
+    magDirect = "Still detecting";
+    return magDirect;
+  }
 
 }
 
-//IR Sensor Code
-void StartSample()
+//IR Sensor New
+double GetIrFrequency() 
 {
-  sampling_flag = true;
-}
-
-double irSensor () {
-
   long total_duration = 0;
   double frequency = 0;
   long total_duration_averaged = 0;  
-  if (sampling_flag) {
-    // starts sampling the values into samples
-    for (int i = 0; i < SAMPLE_CYCLE; i++) {
-      long low_duration = pulseIn(pinIR, LOW);
-      long high_duration = pulseIn(pinIR, HIGH);
-      total_duration += high_duration + low_duration;
-      Serial.println(low_duration);
-      Serial.println(high_duration);
+
+  // starts sampling the values into samples
+  for (int i = 0; i < SAMPLE_CYCLE; i++) {
+    long low_duration = pulseIn(pinIR, LOW);
+    long high_duration = pulseIn(pinIR, HIGH);
+    total_duration += high_duration + low_duration;
+    if (DEBUG_MODE) {
+      Serial.print("low_duration: ");
+      Serial.print(low_duration);
+      Serial.print(", high_duration: ");
+      Serial.print(high_duration);
+      Serial.print(", total_duration: ");
       Serial.println(total_duration);
     }
-    // takes median of the samples
-    total_duration_averaged = total_duration / SAMPLE_CYCLE;
-    Serial.println("total_duration_averaged");
-    Serial.println(total_duration_averaged);
-    frequency = 1000000.0 / total_duration_averaged;
+  }
 
-    sampling_flag = false;
-    // prints the median value
+  // takes mean of the samples
+  total_duration_averaged = total_duration / SAMPLE_CYCLE;
+  frequency = 1000000.0 / total_duration_averaged;
+
+  if (DEBUG_MODE)
+  {
     Serial.print("frequency: ");
     Serial.println(frequency);
     Serial.println();
-    return frequency; 
   }
-  else {
-    // set sample flag to true if input an 'a'
-    if (Serial.available() > 0) {
-      char input = Serial.read();
-      if (input == 'a') {
-        StartSample();
-      }
-    }
+
+  return frequency;
+}
+
+String GetMineralType()
+{
+  double frequency = GetIrFrequency();
+  String mineral_type = "";
+
+  if (frequency > ThiotimolineFrequency - FrequencyTolerance && frequency < ThiotimolineFrequency + FrequencyTolerance)
+  {
+    mineral_type = "Thiotimoline";
   }
-  delay(500);
+  else if (frequency > NetheriteFrequency - FrequencyTolerance && frequency < NetheriteFrequency + FrequencyTolerance)
+  {
+    mineral_type = "Netherite";
+  }
+  else
+  {
+    mineral_type = "Unknown";
+  }
+
+  return mineral_type;
+}
+
+float radioSensor () {
+
+  int Htime = 0;             //integer for storing high time
+  int Ltime = 0;                //integer for storing low time
+  float Ttime = 0;           // integer for storing total time of a cycle
+  float frequency = 0;       //storing frequency
+
+  Htime = pulseIn(pinRadio, HIGH);   //read high time
+  Ltime = pulseIn(pinRadio, LOW);     //read low time
+  Ttime = Htime + Ltime;
+
+  frequency = 1000000/ (Ttime); //getting frequency with Ttime is in Micro seconds
+
+  if ((frequency>230) && (frequency<250)){ //if frequency is within these values it is correct
+    frequency = 239;
+  }
+
+  else if ((frequency>140)&&(frequency<160)){ //if frequency is within these values it is correct
+    frequency = 151;
+  }
+  
+  return frequency;
 
 }
 
 int ultrasonicSensor () {
 
-}
+  int Htime2 = 0;             //integer for storing high time
+  int Ltime2 = 0;                //integer for storing low time
+  float Ttime2 = 0;            // integer for storing total time of a cycle
+  float frequency2 = 0;        //storing frequency
 
-int radioSensor () {
+  Htime2 = pulseIn(pinUltra, HIGH);   //read high time
+
+  Ltime2 = pulseIn(pinUltra, LOW);     //read low time
+
+  Ttime2 = Htime2 + Ltime2;
+
+  frequency2 = 1000000/ (Ttime2); //getting frequency with Ttime is in Micro seconds
+
+ 
+
+  if ((frequency2 > 38500) && (frequency2 < 41500)){ //if frequency is within these values it is correct
+
+    frequency2 = 40000;
+
+  }
+
+  return frequency2;
 
 }
 
@@ -437,13 +502,13 @@ void detect() {
 
     server.send(200, F("text/html"), webpageDetect);
 
-    string magDirect = magneticSensor(); //Checks magnetic sensor
+    String magDirect = magneticSensor(); //Checks magnetic sensor
 
-    double irVal = irSensor();
+    String irType = GetMineralType();
 
-    int acousticVal = ultrasonicSensor();
+    int ultraVal = (ultrasonicSensor()/1000);
 
-    int radioVal = radioSensor();
+    float radioVal = radioSensor();
 
     //Adamantine
     if (magDirect == "North") {
@@ -456,12 +521,12 @@ void detect() {
     }
 
     //Thiotimoline
-    else if (irVal == 353) {
+    else if (irType == "Thiotimoline") { // irVal == "Thiotimoline"
         server.send(200, F("text/html"), webpageDetectT);
     }
 
     //Netherite
-    else if (irVal == 571 && acousticVal == 40) {
+    else if (irType == "Netherite" && ultraVal == 40) { // irVal == "Netherite"
         server.send(200, F("text/html"), webpageDetectN);
     }
     //to get to this point the magnetic sensor must be none so ignore 81khz input possibilities
@@ -518,8 +583,10 @@ void setup() { //will contain the handles
 
   pinMode(pinMagnetic, INPUT);
   pinMode(pinIR, INPUT); 
+  pinMode(pinRadio, INPUT);
+  pinMode(pinUltra, INPUT);
   
-    Serial.println("Hello! This is Rover!");
+  Serial.println("Hello! This is Rover!");
 
   //Wait 10s for the serial connection before proceeding
   //This ensures you can see messages from startup() on the monitor
