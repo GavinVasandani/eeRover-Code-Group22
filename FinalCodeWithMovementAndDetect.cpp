@@ -502,44 +502,38 @@ void detect() {
 
     server.send(200, F("text/html"), webpageDetect);
 
-    String magDirect = magneticSensor(); //Checks magnetic sensor
-
+    //Values from Sensors
+    String magDirect = magneticSensor(); 
     String irType = GetMineralType();
-
     int ultraVal = (ultrasonicSensor()/1000);
-
     float radioVal = radioSensor();
 
+    //Mineral type conditionals
     //Adamantine
     if (magDirect == "North") {
         server.send(200, F("text/html"), webpageDetectA); 
     }
-
     //Xirang
     else if (magDirect == "South") {
         server.send(200, F("text/html"), webpageDetectX);
     }
-
     //Thiotimoline
     else if (irType == "Thiotimoline") { // irVal == "Thiotimoline"
         server.send(200, F("text/html"), webpageDetectT);
     }
-
     //Netherite
     else if (irType == "Netherite" && ultraVal == 40) { // irVal == "Netherite"
         server.send(200, F("text/html"), webpageDetectN);
     }
-    //to get to this point the magnetic sensor must be none so ignore 81khz input possibilities
     //gaborium
     else if (radioVal == 151) {
         server.send(200, F("text/html"), webpageDetectG);
     }
-
     //lathwaite
     else if (radioVal == 239) { //maybe 
         server.send(200, F("text/html"), webpageDetectL);
     }
-
+    //No rock
     else {
         server.send(200, F("text/html"), webpageDetectError);
     }
