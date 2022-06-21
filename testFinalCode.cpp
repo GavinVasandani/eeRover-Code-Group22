@@ -3,7 +3,7 @@
 const int pinMagnetic = A0;
 const int pinIR = A1;
 const int pinRadio = 1;
-const int pinUltra = 7;
+//const int pinUltra = 7;
 
 int northCount = 0;
 int southCount = 0;
@@ -21,7 +21,7 @@ void setup () {
   pinMode(pinMagnetic, INPUT);
   pinMode(pinIR, INPUT); 
   pinMode(pinRadio, INPUT);
-  pinMode(pinUltra, INPUT);
+  //pinMode(pinUltra, INPUT);
   Serial.begin(9600);
 
 }
@@ -42,7 +42,7 @@ long backgroundMagnetic () {
 
   Serial.println(init_measure);
 
-    return init_measure
+    return init_measure;
 
   delay(2000);
 
@@ -213,7 +213,7 @@ float radioSensor () {
 
 }
 
-int ultrasonicSensor () {
+/*int ultrasonicSensor () {
 
   int Htime2 = 0;             //integer for storing high time
   int Ltime2 = 0;                //integer for storing low time
@@ -238,7 +238,7 @@ int ultrasonicSensor () {
 
   return frequency2;
 
-}
+}*/
 
 
 //void detect() {
@@ -249,8 +249,9 @@ void loop () {
     //Values from Sensors
     String magDirect = magneticSensor(); 
     String irType = GetMineralType();
-    int ultraVal = (ultrasonicSensor()/1000);
+    //int ultraVal = (ultrasonicSensor()/1000);
     float radioVal = radioSensor();
+    int ultraVal = 40;
 
     //Mineral type conditionals
     //Adamantine
@@ -285,7 +286,7 @@ void loop () {
     }
     //No rock
     else {
-        server.send(200, F("text/html"), webpageDetectError);
+        //server.send(200, F("text/html"), webpageDetectError);
         Serial.println("Rock: Error");
     }
 
