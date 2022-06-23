@@ -3,7 +3,7 @@
 // ---------------------- Pin Definitions ----------------------
 const int pinMagnetic = A0;
 const int pinIR = A1;
-const int pinRadio = 8;
+const int pinRadio = 5;
 const int pinUltra = 7;
 
 
@@ -26,10 +26,11 @@ double NetheriteFrequency = 571.0;
 
 // --------------------- DEBUG Options ---------------------
 bool ContinuousDetection = true;
-bool PrintExecutionTime = true;
+float ContinuousDetectionInterval = 500;
+bool PrintExecutionTime = false;
 
-bool DEBUG_Magnetic = false;
-bool DEBUG_IR = false;
+bool DEBUG_Magnetic = true;
+bool DEBUG_IR = true;
 bool DEBUG_Radio = true;
 bool DEBUG_Ultra = false;
 
@@ -110,7 +111,7 @@ String magneticSensor() {
   Serial.println(" mT");  
   delay(2000);*/
 
-  if (measure > 2.5){
+  if (measure > 5){
     magDirect = "South";
     southCount += 1;
     northCount = 0;
@@ -119,7 +120,7 @@ String magneticSensor() {
       Serial.println("South");
     return magDirect;
   }
-  else if(measure < -2.5){
+  else if(measure < -5){
     magDirect = "North";
     northCount += 1; 
     southCount = 0;
@@ -180,14 +181,21 @@ double GetIrFrequency()
   double frequency = 0;
   long total_duration_averaged = 0;  
 
+  float timeout_duration = 0.1;     // in seconds
+  bool detection_failed = false;
+
   // starts sampling the values into samples
   for (int i = 0; i < SAMPLE_CYCLE; i++) {
-    long low_duration = pulseIn(pinIR, LOW);
-    long high_duration = pulseIn(pinIR, HIGH);
+    long low_duration = pulseIn(pinIR, LOW, timeout_duration * 1000000);
+    long high_duration = pulseIn(pinIR, HIGH, timeout_duration * 1000000);
     total_duration += high_duration + low_duration;
 
-    if (IR_DETAILED_DEBUG_MODE) {
-      Serial.print("low_duration: ");
+    if (total_duration == 0) {
+      detection_failed = true;
+    }
+
+    if (IR_DETAILED_DEBUG_MODE && !detection_failed) {
+      Serial.print("IR - low_duration: ");
       Serial.print(low_duration);
       Serial.print(", high_duration: ");
       Serial.print(high_duration);
@@ -196,13 +204,18 @@ double GetIrFrequency()
     }
   }
 
+  if (DEBUG_IR && detection_failed){
+        Serial.println("IR - Detection failed.");
+        return -1;
+      }
+
   // takes mean of the samples
   total_duration_averaged = total_duration / SAMPLE_CYCLE;
   frequency = 1000000.0 / total_duration_averaged;
 
   if (DEBUG_IR)
   {
-    Serial.print("frequency: ");
+    Serial.print("IR - frequency: ");
     Serial.println(frequency);
     Serial.println();
   }
@@ -243,8 +256,14 @@ float radioSensor () {
   float Ttime = 0;           // integer for storing total time of a cycle
   float frequency = 0;       //storing frequency
 
-  Htime = pulseIn(pinRadio, HIGH);   //read high time
-  Ltime = pulseIn(pinRadio, LOW);     //read low time
+  // added by stanly: modified to shorted the failed timing
+  float timeout_duration = 0.1;     // in seconds
+
+  Htime = pulseIn(pinRadio, HIGH, timeout_duration * 1000000);   //read high time
+  Ltime = pulseIn(pinRadio, LOW, timeout_duration * 1000000);     //read low time
+
+  //Htime = pulseIn(pinRadio, HIGH);   //read high time
+  //Ltime = pulseIn(pinRadio, LOW);     //read low time
   Ttime = Htime + Ltime;
 
   frequency = 1000000/ (Ttime); //getting frequency with Ttime is in Micro seconds
@@ -321,33 +340,15 @@ int ultrasonicSensor () {
 # pragma endregion
 
 
-//void detect() {
-void loop () 
+String DetectMineral()
 {
-
     float current_time;
 
-    if (!ContinuousDetection)
-    {
-        // press a to start detecting
-        if (Serial.available() > 0) {
-            char key = Serial.read();
-            if (key == 'a') {
-                Serial.println();
-                Serial.println("* Detection started *");
-                DetectionStarted = true;
-            }
-        }
-    }
-    else
-        DetectionStarted = true;
-
-    if (!DetectionStarted)
-        return;
+    
     
     if (PrintExecutionTime)
     {
-      Serial.print("------- Detection Started -------");
+      Serial.println();
       current_time = millis();
     }
 
@@ -408,44 +409,87 @@ void loop ()
           Serial.println();
           current_time = millis();
         }
+    }
+
+    if (PrintExecutionTime)
+    {
+      Serial.println();
+    }
 
     //Mineral type conditionals
     //Adamantine
     if (magDirect == "North" && radioVal == 151) {
         //server.send(200, F("text/html"), webpageDetectA); 
-        Serial.println("Rock: Adamantine");
+        return "Adamantine";
     }
     //Xirang
     else if (magDirect == "South" && radioVal == 239) {
         //server.send(200, F("text/html"), webpageDetectX);
-        Serial.println("Rock: Xirang");
+        return "Xirang";
     }
     //Thiotimoline
     else if (irType == "Thiotimoline" && magDirect == "None") { // irVal == "Thiotimoline"
         //server.send(200, F("text/html"), webpageDetectT);
-        Serial.println("Rock: Thiotimoline");
+        return "Thiotimoline";
     }
     //Netherite
     else if (irType == "Netherite" && ultraVal == 40 && magDirect == "None") { // irVal == "Netherite"
         //server.send(200, F("text/html"), webpageDetectN);
-        Serial.println("Rock: Netherite");
+        return "Netherite";
     }
     //gaborium
     else if (radioVal == 151 && ultraVal == 40 && magDirect == "None") {
         //server.send(200, F("text/html"), webpageDetectG);
-        Serial.println("Rock: Gaborium");
+        return "Gaborium";
     }
     //lathwaite
     else if (radioVal == 239 && magDirect == "None") { //maybe 
         //server.send(200, F("text/html"), webpageDetectL);
-        Serial.println("Rock: Lathwaite");
+        return "Lathwaite";
     }
     //No rock
     else {
         //server.send(200, F("text/html"), webpageDetectError);
-        Serial.println("Rock: Error");
+        return "";
     }
 
     //server.send(200, F("text/plain"), F("DETECT"));
+}
+
+
+//void detect() {
+void loop () 
+{
+  if (!ContinuousDetection)
+  {
+      // press a to start detecting
+      if (Serial.available() > 0) {
+          char key = Serial.read();
+          if (key == 'a') {
+              Serial.println();
+              Serial.println("* Detection started *");
+              DetectionStarted = true;
+          }
+      }
+  }
+  else
+      DetectionStarted = true;
+
+  if (!DetectionStarted)
+      return;
+
+  String RockType = DetectMineral();
+  if (RockType != "")
+  {
+    Serial.print("Rock: ");
+    Serial.println(RockType);
+  }
+  else
+  {
+    Serial.println("No rock detected.");
+  }
+
+  if (ContinuousDetection)
+    delay(ContinuousDetectionInterval);
 
 }

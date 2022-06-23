@@ -28,13 +28,13 @@ const int pin_PWMBR = 11;
 const int pin_PWMBL = 12;
 
 int motorSpeed = 200;
-//int motorSpeedR = 220;
+int motorSpeedFaulty = 243;
 double motorTime = 1000;
 
 // ---------------------- Pin Definitions ----------------------
 const int pinMagnetic = A0;
 const int pinIR = A1;
-const int pinRadio = 8; //connect to pin 1 not 8
+const int pinRadio = 5; //connect to pin 4 not 8
 const int pinUltra = 7;
 
 
@@ -60,7 +60,7 @@ bool ContinuousDetection = true;
 float ContinuousDetectionInterval = 500;
 bool PrintExecutionTime = false;
 
-bool DEBUG_Magnetic = false;
+bool DEBUG_Magnetic = true;
 bool DEBUG_IR = true;
 bool DEBUG_Radio = true;
 bool DEBUG_Ultra = false;
@@ -154,6 +154,8 @@ void handleRoot()
   server.send(200, F("text/html"), webpageHome);
 }
 
+IPAddress ip;
+
 void moveRight() { //DONE
 
     server.send(200, F("text/html"), webpageRight);
@@ -166,9 +168,9 @@ void moveRight() { //DONE
     digitalWrite(pin_DIRBL, LOW);  //LDIR 
 
     analogWrite(pin_PWMFR, motorSpeed);  //REN
-    analogWrite(pin_PWMFL, motorSpeed);  //LEN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
-    analogWrite(pin_PWMBL, motorSpeed);  //LEN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
     server.send(200, F("text/plain"), F("RIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
@@ -185,9 +187,9 @@ void moveLeft() { //DONE
     digitalWrite(pin_DIRBL, HIGH);  //LDIR 
 
     analogWrite(pin_PWMFR, motorSpeed);  //REN
-    analogWrite(pin_PWMFL, motorSpeed);  //LEN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
-    analogWrite(pin_PWMBL, motorSpeed);  //LEN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
     server.send(200, F("text/plain"), F("LEFT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
@@ -204,9 +206,9 @@ void moveFront() { //DONE
     digitalWrite(pin_DIRBL, LOW);  //LDIR 
     
     analogWrite(pin_PWMFR, motorSpeed);  //REN
-    analogWrite(pin_PWMFL, motorSpeed);  //LEN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
-    analogWrite(pin_PWMBL, motorSpeed);  //LEN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
 
     server.send(200, F("text/plain"), F("FRONT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
@@ -241,9 +243,9 @@ void moveBack() { //DONE
     digitalWrite(pin_DIRBL, HIGH);  //LDIR 
 
     analogWrite(pin_PWMFR, motorSpeed);  //REN
-    analogWrite(pin_PWMFL, motorSpeed);  //LEN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
-    analogWrite(pin_PWMBL, motorSpeed);  //LEN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
 
 
@@ -262,9 +264,9 @@ void moveTurn() { //DONE
     digitalWrite(pin_DIRBL, LOW);  //LDIR 
 
     analogWrite(pin_PWMFR, motorSpeed);  //REN
-    analogWrite(pin_PWMFL, motorSpeed);  //LEN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
-    analogWrite(pin_PWMBL, motorSpeed);  //LEN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
     server.send(200, F("text/plain"), F("TURN")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
@@ -283,7 +285,7 @@ void moveFrontRight() { //DONE
     analogWrite(pin_PWMFR, motorSpeed);  //REN
     analogWrite(pin_PWMFL, 0);  //LEN
     analogWrite(pin_PWMBR, 0);  //REN
-    analogWrite(pin_PWMBL, motorSpeed);  //LEN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
 
     server.send(200, F("text/plain"), F("FRONTRIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
@@ -301,7 +303,7 @@ void moveFrontLeft() { //DONE
     digitalWrite(pin_DIRBL, HIGH);  //LDIR 
 
     analogWrite(pin_PWMFR, 0);  //REN
-    analogWrite(pin_PWMFL, motorSpeed);  //LEN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
     analogWrite(pin_PWMBL, 0);  //LEN
 
@@ -322,7 +324,7 @@ void moveBackRight() {  //DONE
     analogWrite(pin_PWMFR, motorSpeed);  //REN
     analogWrite(pin_PWMFL, 0);  //LEN
     analogWrite(pin_PWMBR, 0);  //REN
-    analogWrite(pin_PWMBL, motorSpeed);  //LEN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
 
     server.send(200, F("text/plain"), F("BACKRIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
@@ -340,7 +342,7 @@ void moveBackLeft() { //DONE
     digitalWrite(pin_DIRBL, LOW);  //LDIR 
 
     analogWrite(pin_PWMFR, 0);  //REN
-    analogWrite(pin_PWMFL, motorSpeed);  //LEN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
     analogWrite(pin_PWMBL, 0);  //LEN
 
@@ -470,7 +472,7 @@ double GetIrFrequency()
   double frequency = 0;
   long total_duration_averaged = 0;  
 
-  float timeout_duration = 0.1;     // in seconds
+  float timeout_duration = 1;     // in seconds
   bool detection_failed = false;
 
   // starts sampling the values into samples
@@ -546,7 +548,7 @@ float radioSensor () {
   float frequency = 0;       //storing frequency
 
   // added by stanly: modified to shorted the failed timing
-  float timeout_duration = 0.1;     // in seconds
+  float timeout_duration = 1;     // in seconds
 
   Htime = pulseIn(pinRadio, HIGH, timeout_duration * 1000000);   //read high time
   Ltime = pulseIn(pinRadio, LOW, timeout_duration * 1000000);     //read low time
@@ -708,37 +710,37 @@ String DetectMineral()
     //Mineral type conditionals
     //Adamantine
     if (magDirect == "North" && radioVal == 151) {
-        //server.send(200, F("text/html"), webpageDetectA); 
+        server.send(200, F("text/html"), webpageDetectA); 
         return "Adamantine";
     }
     //Xirang
     else if (magDirect == "South" && radioVal == 239) {
-        //server.send(200, F("text/html"), webpageDetectX);
+        server.send(200, F("text/html"), webpageDetectX);
         return "Xirang";
     }
     //Thiotimoline
     else if (irType == "Thiotimoline" && magDirect == "None") { // irVal == "Thiotimoline"
-        //server.send(200, F("text/html"), webpageDetectT);
+        server.send(200, F("text/html"), webpageDetectT);
         return "Thiotimoline";
     }
     //Netherite
     else if (irType == "Netherite" && ultraVal == 40 && magDirect == "None") { // irVal == "Netherite"
-        //server.send(200, F("text/html"), webpageDetectN);
+        server.send(200, F("text/html"), webpageDetectN);
         return "Netherite";
     }
     //gaborium
     else if (radioVal == 151 && ultraVal == 40 && magDirect == "None") {
-        //server.send(200, F("text/html"), webpageDetectG);
+        server.send(200, F("text/html"), webpageDetectG);
         return "Gaborium";
     }
     //lathwaite
     else if (radioVal == 239 && magDirect == "None") { //maybe 
-        //server.send(200, F("text/html"), webpageDetectL);
+        server.send(200, F("text/html"), webpageDetectL);
         return "Lathwaite";
     }
     //No rock
     else {
-        //server.send(200, F("text/html"), webpageDetectError);
+        server.send(200, F("text/html"), webpageDetectError);
         return "";
     }
 
@@ -825,6 +827,7 @@ void setup() { //will contain the handles
   //Configure the static IP address if group number is set
     if (groupNumber) //so if groupnumber != 0 aka is anything other than 0 we execute
         WiFi.config(IPAddress(192,168,0,groupNumber+1));
+        //WiFi.config(IPAddress(146,169,132,249));
 
   // attempt to connect to WiFi network
     Serial.print(F("Connecting to WPA SSID: "));
@@ -913,6 +916,8 @@ void setup() { //will contain the handles
 }
 
 void loop () { //function looped constantly
+      //ip = WiFi.localIP();
+      //Serial.println(ip);
     server.handleClient(); //this command checks handle in URL and executes the required callback.
     //The function assigned to a specific handle is given in void setup(); 
 }
