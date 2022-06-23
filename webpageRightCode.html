@@ -1,6 +1,17 @@
 <html>
-    <body>
-        <p style="font-size:10vw; padding: 10px; border: 5px solid blue;">Current Instruction is: Right</p>   
+
+    <head>
+        <script>
+          function myFreq() {
+            var frequency = "123Hz";
+            document.getElementById("myText").innerHTML = frequency;
+          }
+        </script>
+      </head>
+
+      <body onload="myFreq()">
+
+        <p style="font-size:10vw; padding: 10px; border: 5px solid blue;">Current Rock is: Xirang and frequency is: <span id="myText"></span></p>   
           
         <style>    h1 {text-align: center;}
             p {text-align: center;}
@@ -8,4 +19,3 @@
             </style>
     </body>
 </html>
-
