@@ -34,8 +34,8 @@ double motorTime = 1000;
 // ---------------------- Pin Definitions ----------------------
 const int pinMagnetic = A0;
 const int pinIR = A1;
-const int pinRadio = 5; //connect to pin 4 not 8
-const int pinUltra = 7;
+const int pinRadio = A2; //connect to pin 4 not 8
+const int pinUltra = 5;
 
 
 //  --------------------- Magnetic Sensor ---------------------
@@ -48,7 +48,7 @@ long init_measure = 0;
 // --------------------- IR Sensor ---------------------
 
 int SAMPLE_CYCLE = 5;     // number of complete periods we sample and take median of
-bool IR_DETAILED_DEBUG_MODE = false;
+bool IR_DETAILED_DEBUG_MODE = true;
 
 double FrequencyTolerance = 75.0;
 double ThiotimolineFrequency = 353.0;
@@ -56,6 +56,7 @@ double NetheriteFrequency = 571.0;
 
 
 // --------------------- DEBUG Options ---------------------
+bool StandaloneEnvironment = false;
 bool ContinuousDetection = true;
 float ContinuousDetectionInterval = 500;
 bool PrintExecutionTime = false;
@@ -101,86 +102,6 @@ function moveStop() {xhttp.open(\"GET\", \"/stop\"); xhttp.send();}\
 </script></html>"; //NOT CALIBRATED FOR THIS
 //MAYBE NOT NECESSARY
 
-const char webpageRockDefault[] =
-"<html><head><style>\
-.btn {background-color: inherit;padding: 10px ;font-size: 10vw; border: 5px solid blue;}\
-.btn:hover {background: #eee;}\
-</style></head>\
-<body>\
-<br>Type of rock detected is: <span id=\"rock\"></span>\
-</body>\
-<script>\
-var xhttp = new XMLHttpRequest();\
-xhttp.onreadystatechange = function() {if (this.readyState == 4 && this.status == 200) {document.getElementById(\"rock\").innerHTML = this.responseText;}};\
-</script></html>";
-
-const char webpageWithFreq[] = "<html>
-
-    <head>
-        <script>
-          function myFreq() {
-            var frequency = \"123Hz\";
-            document.getElementById(\"myText\").innerHTML = frequency;
-          }
-        </script>
-      </head>
-
-      <body onload=\"myFreq()\">
-//fine below
-        <p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Current Rock is: Xirang and frequency is: <span id=\"myText\"></span></p>   
-          
-        <style>    h1 {text-align: center;}
-            p {text-align: center;}
-            div {text-align: center;} 
-            </style>
-    </body>
-</html>";
-
-
-const char webpageWithVar[] = "<html>
-
-    <head>
-        <script>
-          function myFreq() {
-            var frequency = \"123Hz\";
-            document.getElementById(\"myText\").innerHTML = frequency;
-          }
-        </script>
-      </head>
-
-      <body onload=\"myFreq()\">
-
-        <p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Current Rock is: Xirang and frequency is: <span id="myText"></span></p>   
-          
-        <style>    h1 {text-align: center;}
-            p {text-align: center;}
-            div {text-align: center;} 
-            </style>
-    </body>
-</html>";
-
-const char webpageWithFreq[] = "<html>
-
-    <head>
-        <script>
-          function myFreq() {
-            var frequency = \"123Hz\";
-            document.getElementById(\"myText\").innerHTML = frequency;
-          }
-        </script>
-      </head>
-
-      <body onload=\"myFreq()\">
-
-        <p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Current Rock is: Xirang and frequency is: <span id="myText"></span></p>   
-          
-        <style>    h1 {text-align: center;}
-            p {text-align: center;}
-            div {text-align: center;} 
-            </style>
-    </body>
-</html>";
-
 //this is a custom webpage just to show current instruction is right
 const char webpageRight[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
@@ -197,7 +118,9 @@ const char webpageStop[] = "<html><body><p style=\"font-size:10vw; padding: 10px
 const char webpageBack[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Back</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is Turn
-const char webpageTurn[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Turn</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageTurnR[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Turn Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+
+const char webpageTurnL[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Turn Left</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //this is a custom webpage just to show current instruction is front
 const char webpageFrontRight[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Front-Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
@@ -211,24 +134,21 @@ const char webpageBackLeft[] = "<html><body><p style=\"font-size:10vw; padding: 
 //this is a custom webpage just to show current instruction is Turn
 const char webpageBackRight[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Back-Right</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetect[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Current Instruction is: Detecting...</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetect[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Current Instruction is: Detecting...</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectG[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock is Gaborium</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetectG[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Gaborium</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectL[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock is Lathwaite</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetectL[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Lathwaite</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectA[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock is Adamantine</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetectA[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Adamantine</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectX[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock is Xirang</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetectX[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Xirang</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectT[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock is Thiotimoline</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetectT[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Thiotimoline</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectN[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock is Netherite</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
+const char webpageDetectN[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock is Netherite</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
-const char webpageDetectError[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock Undetectable</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
-
-//const char webpageRockDefault[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid blue;\">Rock Undetectable</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
-
+const char webpageDetectError[] = "<html><body><p style=\"font-size:10vw; padding: 10px; border: 5px solid red;\">Rock Undetectable</p> <style>    h1 {text-align: center;} p {text-align: center;} div {text-align: center;} </style> </body> </html>";
 
 //handle function assignments
 //Return the web page
@@ -245,10 +165,10 @@ void moveRight() { //DONE
     //digitalWrite(3, LOW);
     //digitalWrite(4, HIGH);
 
-    digitalWrite(pin_DIRFR, LOW);  //RDIR
-    digitalWrite(pin_DIRFL, HIGH);  //LDIR
-    digitalWrite(pin_DIRBR, HIGH);  //RDIR
-    digitalWrite(pin_DIRBL, LOW);  //LDIR 
+    digitalWrite(pin_DIRFR, HIGH);  //RDIR
+    digitalWrite(pin_DIRFL, LOW);  //LDIR
+    digitalWrite(pin_DIRBR, LOW);  //RDIR
+    digitalWrite(pin_DIRBL, HIGH);  //LDIR
 
     analogWrite(pin_PWMFR, motorSpeed);  //REN
     analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
@@ -262,12 +182,12 @@ void moveLeft() { //DONE
 
     server.send(200, F("text/html"), webpageLeft);
     //digitalWrite(3, HIGH);
-    //digitalWrite(4, LOW);
+    //digitalWrite(4, LOW); 
 
-    digitalWrite(pin_DIRFR, HIGH);  //RDIR
-    digitalWrite(pin_DIRFL, LOW);  //LDIR
-    digitalWrite(pin_DIRBR, LOW);  //RDIR
-    digitalWrite(pin_DIRBL, HIGH);  //LDIR 
+    digitalWrite(pin_DIRFR, LOW);  //RDIR
+    digitalWrite(pin_DIRFL, HIGH);  //LDIR
+    digitalWrite(pin_DIRBR, HIGH);  //RDIR
+    digitalWrite(pin_DIRBL, LOW);  //LDIR 
 
     analogWrite(pin_PWMFR, motorSpeed);  //REN
     analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
@@ -335,9 +255,9 @@ void moveBack() { //DONE
     server.send(200, F("text/plain"), F("BACK")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
 
-void moveTurn() { //DONE
+void moveTurnR() { //DONE
 
-    server.send(200, F("text/html"), webpageTurn);
+    server.send(200, F("text/html"), webpageTurnR);
     //digitalWrite(3, LOW);
     //digitalWrite(4, LOW);
 
@@ -354,29 +274,28 @@ void moveTurn() { //DONE
     server.send(200, F("text/plain"), F("TURN")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
 
-void moveFrontRight() { //DONE
+void moveTurnL() { //DONE
 
-    server.send(200, F("text/html"), webpageFrontRight);
+    server.send(200, F("text/html"), webpageTurnL);
     //digitalWrite(3, LOW);
     //digitalWrite(4, LOW);
 
     digitalWrite(pin_DIRFR, LOW);  //RDIR
     digitalWrite(pin_DIRFL, HIGH);  //LDIR
-    digitalWrite(pin_DIRBR, HIGH);  //RDIR
-    digitalWrite(pin_DIRBL, LOW);  //LDIR 
+    digitalWrite(pin_DIRBR, LOW);  //RDIR
+    digitalWrite(pin_DIRBL, HIGH);  //LDIR 
 
     analogWrite(pin_PWMFR, motorSpeed);  //REN
-    analogWrite(pin_PWMFL, 0);  //LEN
-    analogWrite(pin_PWMBR, 0);  //REN
+    analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
+    analogWrite(pin_PWMBR, motorSpeed);  //REN
     analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
-
-    server.send(200, F("text/plain"), F("FRONTRIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
+    server.send(200, F("text/plain"), F("TURN")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
 
-void moveFrontLeft() { //DONE
+void moveFrontRight() { //DONE
 
-    server.send(200, F("text/html"), webpageFrontLeft);
+    server.send(200, F("text/html"), webpageFrontRight);
     //digitalWrite(3, LOW);
     //digitalWrite(4, LOW);
 
@@ -389,6 +308,26 @@ void moveFrontLeft() { //DONE
     analogWrite(pin_PWMFL, motorSpeedFaulty);  //LEN
     analogWrite(pin_PWMBR, motorSpeed);  //REN
     analogWrite(pin_PWMBL, 0);  //LEN
+
+
+    server.send(200, F("text/plain"), F("FRONTRIGHT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
+}
+
+void moveFrontLeft() { //DONE
+
+    server.send(200, F("text/html"), webpageFrontLeft);
+    //digitalWrite(3, LOW);
+    //digitalWrite(4, LOW);
+
+    digitalWrite(pin_DIRFR, LOW);  //RDIR
+    digitalWrite(pin_DIRFL, HIGH);  //LDIR
+    digitalWrite(pin_DIRBR, HIGH);  //RDIR
+    digitalWrite(pin_DIRBL, LOW);  //LDIR 
+
+    analogWrite(pin_PWMFR, motorSpeed);  //REN
+    analogWrite(pin_PWMFL, 0);  //LEN
+    analogWrite(pin_PWMBR, 0);  //REN
+    analogWrite(pin_PWMBL, motorSpeedFaulty);  //LEN
 
     server.send(200, F("text/plain"), F("FRONTLEFT")); //i think this updates URL to be ...ip.../r as the current URL, not sure
 }
@@ -460,10 +399,10 @@ String magneticSensor() {
 
     for(int i = 0; i < 10; i++){
       measure += analogRead(pinMagnetic);
+      measure -= init_measure;
     }
 
     measure /= 10;  
-    measure -= init_measure;
 
     if (DEBUG_Magnetic){
         Serial.print("adc value = ");
@@ -485,7 +424,7 @@ String magneticSensor() {
   Serial.println(" mT");  
   delay(2000);*/
 
-  if (measure > 5){
+  if (measure > 18){
     magDirect = "South";
     southCount += 1;
     northCount = 0;
@@ -494,7 +433,7 @@ String magneticSensor() {
       Serial.println("South");
     return magDirect;
   }
-  else if(measure < -5){
+  else if(measure < -18){
     magDirect = "North";
     northCount += 1; 
     southCount = 0;
@@ -555,7 +494,7 @@ double GetIrFrequency()
   double frequency = 0;
   long total_duration_averaged = 0;  
 
-  float timeout_duration = 1;     // in seconds
+  float timeout_duration = 0.1;     // in seconds
   bool detection_failed = false;
 
   // starts sampling the values into samples
@@ -578,10 +517,11 @@ double GetIrFrequency()
     }
   }
 
-  if (DEBUG_IR && detection_failed){
-        Serial.println("IR - Detection failed.");
-        return -1;
-      }
+  if (detection_failed){
+    if (DEBUG_IR)
+      Serial.println("IR - Detection failed.");
+      return -1;
+  }
 
   // takes mean of the samples
   total_duration_averaged = total_duration / SAMPLE_CYCLE;
@@ -631,13 +571,10 @@ float radioSensor () {
   float frequency = 0;       //storing frequency
 
   // added by stanly: modified to shorted the failed timing
-  float timeout_duration = 1;     // in seconds
+  float timeout_duration = 0.1;     // in seconds
 
   Htime = pulseIn(pinRadio, HIGH, timeout_duration * 1000000);   //read high time
   Ltime = pulseIn(pinRadio, LOW, timeout_duration * 1000000);     //read low time
-
-  //Htime = pulseIn(pinRadio, HIGH);   //read high time
-  //Ltime = pulseIn(pinRadio, LOW);     //read low time
   Ttime = Htime + Ltime;
 
   frequency = 1000000/ (Ttime); //getting frequency with Ttime is in Micro seconds
@@ -678,7 +615,7 @@ float radioSensor () {
 
 # pragma region UltraSonic Sensor
 
-int ultrasonicSensor () {
+/*int ultrasonicSensor () {
 
   int Htime2 = 0;             //integer for storing high time
   int Ltime2 = 0;                //integer for storing low time
@@ -709,7 +646,7 @@ int ultrasonicSensor () {
 
   return frequency2;
 
-}
+} */
 
 # pragma endregion
 
@@ -759,9 +696,9 @@ String DetectMineral()
         }
     }
 
-    if (USE_ULTRA)
+    /*if (USE_ULTRA)
     {
-      ultraVal = (ultrasonicSensor()/1000);
+      //ultraVal = (ultrasonicSensor()/1000);
       if (PrintExecutionTime)
       {
         Serial.print("Ultra: ");
@@ -770,7 +707,7 @@ String DetectMineral()
         Serial.println();
         current_time = millis();
       }
-    }
+    }*/
     
     if (USE_RADIO)
     {
@@ -790,43 +727,40 @@ String DetectMineral()
       Serial.println();
     }
 
-    //Default webpage for rock type
-    server.send(200, F("text/html"), webpageRockDefault);
     //Mineral type conditionals
     //Adamantine
     if (magDirect == "North" && radioVal == 151) {
-        server.send(200, F("text/html"), F("Adamantine, Radio: " + string(radioVal))); //add string(int freq) in F()
+        server.send(200, F("text/html"), webpageDetectA); 
         return "Adamantine";
     }
     //Xirang
     else if (magDirect == "South" && radioVal == 239) {
-        server.send(200, F("text/html"), F("Xirang"));
+        server.send(200, F("text/html"), webpageDetectX);
         return "Xirang";
     }
     //Thiotimoline
-    else if (irType == "Thiotimoline" && magDirect == "None") { // irVal == "Thiotimoline"
-        server.send(200, F("text/html"), F("Thiotimoline"));
+    else if (irType == "Thiotimoline") { // irVal == "Thiotimoline"
+        server.send(200, F("text/html"), webpageDetectT);
         return "Thiotimoline";
     }
     //Netherite
-    else if (irType == "Netherite" && ultraVal == 40 && magDirect == "None") { // irVal == "Netherite"
-        server.send(200, F("text/html"), F("Netherite"));
-        //send string with irType and freq value as opposed to a new webpage
+    else if (irType == "Netherite" && ultraVal == 40) { // irVal == "Netherite"
+        server.send(200, F("text/html"), webpageDetectN);
         return "Netherite";
     }
     //gaborium
-    else if (radioVal == 151 && ultraVal == 40 && magDirect == "None") {
-        server.send(200, F("text/html"), F("Gaborium"));
+    else if (radioVal == 151 && ultraVal == 40) {
+        server.send(200, F("text/html"), webpageDetectG);
         return "Gaborium";
     }
     //lathwaite
-    else if (radioVal == 239 && magDirect == "None") { //maybe 
-        server.send(200, F("text/html"), F("Lathwaite"));
+    else if (radioVal == 239) { //maybe 
+        server.send(200, F("text/html"), webpageDetectL);
         return "Lathwaite";
     }
     //No rock
     else {
-        server.send(200, F("text/html"), F("Error, Radio: " + string(radioVal)));
+        server.send(200, F("text/html"), webpageDetectError);
         return "";
     }
 
@@ -869,141 +803,231 @@ void detect() //detect function which we put in handle
 
 }
 
+
+
 void setup() { //will contain the handles
 
-//configuring the pins to OUTPUT:
-  Serial.begin(9600);
-  pinMode(pin_DIRFR, OUTPUT);
-  pinMode(pin_DIRFL, OUTPUT);
-  pinMode(pin_DIRBR, OUTPUT);
-  pinMode(pin_DIRBL, OUTPUT);
-
-  pinMode(pin_PWMFR, OUTPUT);
-  pinMode(pin_PWMFL, OUTPUT);
-  pinMode(pin_PWMBR, OUTPUT);
-  pinMode(pin_PWMBL, OUTPUT);  
-
-  pinMode(pinMagnetic, INPUT);
-  pinMode(pinIR, INPUT); 
-  pinMode(pinRadio, INPUT);
-  pinMode(pinUltra, INPUT);
-  
-  Serial.println("Hello! This is Rover!");
-
-  //Wait 10s for the serial connection before proceeding
-  //This ensures you can see messages from startup() on the monitor
-  //so this is just a time lag
-  //Remove this for faster startup when the USB host isn't attached
-    while (!Serial && millis() < 10000);  
-
-  //arduino has a built in timer and continues to run as the program works. So millis() outputs time in milliseconds
-  //so if serial.begin() is not 0 and program time is less than 10000ms then we start webserver
-  //so only between 9600-10000 do we do the webserver connections
-
-  //output the following statement to serial monitor
-    Serial.println(F("\nStarting Web Server"));
-
-  //Check WiFi shield is present
-    if (WiFi.status() == WL_NO_SHIELD)
-    {
-        Serial.println(F("WiFi shield not present"));
-        while (true); //so we loop in this state as long as this is true
-    }
-
-  //Configure the static IP address if group number is set
-    if (groupNumber) //so if groupnumber != 0 aka is anything other than 0 we execute
-        WiFi.config(IPAddress(192,168,0,groupNumber+1));
-        //WiFi.config(IPAddress(146,169,132,249));
-
-  // attempt to connect to WiFi network
-    Serial.print(F("Connecting to WPA SSID: "));
-    Serial.println(ssid);
-  //the above 2 statements are all outputted to serial monitor
-
-    while (WiFi.begin(ssid, pass) != WL_CONNECTED) //wifi.begin() is used to connect to wifi network ssid using the password pass.
-  //so while loop repeats until wifi is connected which happens when Wifi.begin() = WL_CONNECTED
-    {
-        delay(500); //repeat reconnection function every 500ms
-        Serial.print('.'); //output . if doesn't connect
-    }
-
-    Serial.println("Rover is connected to: ");
-    Serial.println(ssid);
-    //Code above is used to connect wifi shield to EERover network automatically at startup
-
-    //Adding the handle callbacks based on URL:
-
-    //Register the callbacks to respond to HTTP requests
-  //so this is similar to the URL thingy where at the end of the URL we check if its /on,/off do determine what function to execute
-    server.on(F("/"), handleRoot); //so server is on which is found by a / at the URL so we execute handleRoot which is a func that sends the webpage
-    
-    //handle situation if input is right (r)
-    server.on(F("/r"), moveRight);
-
-    //handle situation if input is left (l)
-    server.on(F("/l"), moveLeft);
-  //so we keep the website on the server by changing URL to /on and executing function ledON
-    
-    //handle situation if input is front (f)
-    server.on(F("/f"), moveFront);
-
-    //handle situation if input is immediate STOP (stop)
-    server.on(F("/stop"), moveStop);
-
-    //handle situation if input is BACK (back)
-    server.on(F("/back"), moveBack);
-
-    //handle situation if input is TURN (turn)
-    server.on(F("/turn"), moveTurn);
-
-    //handle situation if input is FRONTRIGHT (FR)
-    server.on(F("/fr"), moveFrontRight);
-
-    //handle situation if input is FRONTLEFT (FL)
-    server.on(F("/fl"), moveFrontLeft);
-
-    //handle situation if input is BACKRIGHT (BR)
-    server.on(F("/br"), moveBackRight);
-
-    //handle situation if input is BACKLEFT (BL)
-    server.on(F("/bl"), moveBackLeft);
-
-    server.on(F("/detect"), detect);
-    
-    //so essentially we will go in one of these directions, so once we click button we continue in this path, until we hit stop or another button which sends a new URL.
-
-  //so server.on() executed a callback to function ledOFF if /off is present.
-  //server.handleClient() runs the necessary callback by doing the HTTP stuff and calling the required function
-
-    server.onNotFound(handleNotFound); //if no URL handle is found then we execute handleNotFound function
-  
-    server.begin();
-  
-    Serial.print(F("HTTP server started @ "));
-    Serial.println(static_cast<IPAddress>(WiFi.localIP()));
+  if (StandaloneEnvironment)
+  {
+    pinMode(pinMagnetic, INPUT);
+    pinMode(pinIR, INPUT); 
+    pinMode(pinRadio, INPUT);
+    //pinMode(pinUltra, INPUT);
+    Serial.begin(9600);
 
     if (DEBUG_Magnetic) {
-      Serial.println("Background Magnetic measuring...");
+        Serial.println("Background Magnetic measuring...");
+      }
+
+    for(int i = 0; i < 100; i++) {
+
+        init_measure += analogRead(pinMagnetic);
+
     }
 
-  for(int i = 0; i < 100; i++) {
+    init_measure /= 100; 
 
-      init_measure += analogRead(pinMagnetic);
+      if (DEBUG_Magnetic) {
+          Serial.print("adc value = ");
+          Serial.println(init_measure);
+      }
 
   }
 
-  init_measure /= 100; 
+  else
+  {
 
-    if (DEBUG_Magnetic) {
-        Serial.print("adc value = ");
-        Serial.println(init_measure);
+    //configuring the pins to OUTPUT:
+    Serial.begin(9600);
+    pinMode(pin_DIRFR, OUTPUT);
+    pinMode(pin_DIRFL, OUTPUT);
+    pinMode(pin_DIRBR, OUTPUT);
+    pinMode(pin_DIRBL, OUTPUT);
+
+    pinMode(pin_PWMFR, OUTPUT);
+    pinMode(pin_PWMFL, OUTPUT);
+    pinMode(pin_PWMBR, OUTPUT);
+    pinMode(pin_PWMBL, OUTPUT);  
+
+    pinMode(pinMagnetic, INPUT);
+    pinMode(pinIR, INPUT); 
+    pinMode(pinRadio, INPUT);
+    pinMode(pinUltra, INPUT);
+    
+    Serial.println("Hello! This is Rover!");
+
+    //Wait 10s for the serial connection before proceeding
+    //This ensures you can see messages from startup() on the monitor
+    //so this is just a time lag
+    //Remove this for faster startup when the USB host isn't attached
+      while (!Serial && millis() < 10000);  
+
+    //arduino has a built in timer and continues to run as the program works. So millis() outputs time in milliseconds
+    //so if serial.begin() is not 0 and program time is less than 10000ms then we start webserver
+    //so only between 9600-10000 do we do the webserver connections
+
+    //output the following statement to serial monitor
+      Serial.println(F("\nStarting Web Server"));
+
+    //Check WiFi shield is present
+      if (WiFi.status() == WL_NO_SHIELD)
+      {
+          Serial.println(F("WiFi shield not present"));
+          while (true); //so we loop in this state as long as this is true
+      }
+
+    //Configure the static IP address if group number is set
+      if (groupNumber) //so if groupnumber != 0 aka is anything other than 0 we execute
+          WiFi.config(IPAddress(192,168,0,groupNumber+1));
+          //WiFi.config(IPAddress(146,169,132,249));
+
+    // attempt to connect to WiFi network
+      Serial.print(F("Connecting to WPA SSID: "));
+      Serial.println(ssid);
+    //the above 2 statements are all outputted to serial monitor
+
+      while (WiFi.begin(ssid, pass) != WL_CONNECTED) //wifi.begin() is used to connect to wifi network ssid using the password pass.
+    //so while loop repeats until wifi is connected which happens when Wifi.begin() = WL_CONNECTED
+      {
+          delay(500); //repeat reconnection function every 500ms
+          Serial.print('.'); //output . if doesn't connect
+      }
+
+      Serial.println("Rover is connected to: ");
+      Serial.println(ssid);
+      //Code above is used to connect wifi shield to EERover network automatically at startup
+
+      //Adding the handle callbacks based on URL:
+
+      //Register the callbacks to respond to HTTP requests
+    //so this is similar to the URL thingy where at the end of the URL we check if its /on,/off do determine what function to execute
+      server.on(F("/"), handleRoot); //so server is on which is found by a / at the URL so we execute handleRoot which is a func that sends the webpage
+      
+      //handle situation if input is right (r)
+      server.on(F("/r"), moveRight);
+
+      //handle situation if input is left (l)
+      server.on(F("/l"), moveLeft);
+    //so we keep the website on the server by changing URL to /on and executing function ledON
+      
+      //handle situation if input is front (f)
+      server.on(F("/f"), moveFront);
+
+      //handle situation if input is immediate STOP (stop)
+      server.on(F("/stop"), moveStop);
+
+      //handle situation if input is BACK (back)
+      server.on(F("/back"), moveBack);
+
+      //handle situation if input is TURN (turn)
+      server.on(F("/turnr"), moveTurnR);
+
+      //handle situation if input is TURN (turn)
+      server.on(F("/turnl"), moveTurnL);
+
+      //handle situation if input is FRONTRIGHT (FR)
+      server.on(F("/fr"), moveFrontRight);
+
+      //handle situation if input is FRONTLEFT (FL)
+      server.on(F("/fl"), moveFrontLeft);
+
+      //handle situation if input is BACKRIGHT (BR)
+      server.on(F("/br"), moveBackRight);
+
+      //handle situation if input is BACKLEFT (BL)
+      server.on(F("/bl"), moveBackLeft);
+
+      server.on(F("/detect"), detect);
+      
+      //so essentially we will go in one of these directions, so once we click button we continue in this path, until we hit stop or another button which sends a new URL.
+
+    //so server.on() executed a callback to function ledOFF if /off is present.
+    //server.handleClient() runs the necessary callback by doing the HTTP stuff and calling the required function
+
+      server.onNotFound(handleNotFound); //if no URL handle is found then we execute handleNotFound function
+    
+      server.begin();
+
+    
+      Serial.print(F("HTTP server started @ "));
+      Serial.println(static_cast<IPAddress>(WiFi.localIP()));
+  //}
+
+      if (DEBUG_Magnetic) {
+        Serial.println("Background Magnetic measuring...");
+      }
+
+    for(int i = 0; i < 20; i++) {
+
+        init_measure += analogRead(pinMagnetic);
+        delay(100);
     }
 
+    init_measure /= 20; 
+
+    Serial.print("calibratioin complete: ");
+    Serial.println(init_measure);
+
+    /*
+      if (DEBUG_Magnetic) {
+          Serial.print("adc value = ");
+          Serial.println(init_measure);
+      }
+      */
+  }
+
 }
 
-void loop () { //function looped constantly
-      //ip = WiFi.localIP();
-      //Serial.println(ip);
+
+
+void loop () {
+  if (!StandaloneEnvironment)
+  {
+    //ip = WiFi.localIP();
+    //Serial.println(ip);
     server.handleClient(); //this command checks handle in URL and executes the required callback.
     //The function assigned to a specific handle is given in void setup(); 
+  }
+  else
+  {
+    if (!ContinuousDetection)
+  {
+      // press a to start detecting
+      if (Serial.available() > 0) {
+          char key = Serial.read();
+          if (key == 'a') {
+              Serial.println();
+              Serial.println("* Detection started *");
+              DetectionStarted = true;
+          }
+      }
+  }
+  else
+      DetectionStarted = true;
+
+  if (!DetectionStarted)
+      return;
+
+  String RockType = DetectMineral();
+  if (RockType != "")
+  {
+    Serial.print("Rock: ");
+    Serial.println(RockType);
+  }
+  else
+  {
+    Serial.println("No rock detected.");
+  }
+
+  if (ContinuousDetection)
+    delay(ContinuousDetectionInterval);
+  }
+
 }
+/*
+
+void loop () 
+{
+  
+}
+*/

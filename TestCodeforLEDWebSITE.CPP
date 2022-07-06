@@ -64,6 +64,12 @@ function ledOn() {xhttp.open(\"GET\", \"/on\"); xhttp.send();}\
 function ledOff() {xhttp.open(\"GET\", \"/off\"); xhttp.send();}\
 </script></html>";
 
+const char webpageON[] = "<html>
+<body>
+<h1>LED is ON!</h1>
+</body>
+</html>";
+
 WiFiWebServer server(80);
 
 //Return the web page
@@ -76,7 +82,7 @@ void handleRoot()
 void ledON()
 {
   digitalWrite(LED_BUILTIN,1); //outputs 1 for LED aka makes LED = True which makes LED light up
-  server.send(200, F("text/plain"), F("ON")); //i think this updates URL to be ...ip.../ON
+  server.send(200, F("text/plain"), webpageON); //i think this updates URL to be ...ip.../ON
 } 
 
 //Switch LED off and acknowledge
@@ -180,4 +186,35 @@ void loop()
   //Serial.print("Gah");
   server.handleClient(); //
   //Serial.print("MMM");
+}
+
+
+void setup() {
+...
+  server.on(F("/on"), ledON);
+...
+}
+
+        let frontButton = createButton(x:147, y:189, title:"Front", color:.systemBlue); //x:147
+        view.addSubview(frontButton);
+
+func createButton(x:Int, y:Int, title:String, color:UIColor) -> UIButton {
+  let button = UIButton(frame: CGRect(x: x, y: y, width: 100, height: 50));
+  button.configuration = createConfig(title:title, color:color);
+  return button;
+}
+
+func createConfig(title : String, color : UIColor) -> UIButton.Configuration {
+  var config: UIButton.Configuration = .filled();
+  config.baseBackgroundColor = color;
+  config.title = title;
+  return config;
+  }
+}
+
+frontButton.addTarget(self, action:#selector(BtnPressedFront), for: .touchDown);
+frontButton.addTarget(self, action:#selector(BtnPressedDefault), for: [.touchUpInside, .touchUpOutside]);
+
+@objc private func BtnPressedFront () {
+  webview.load(URLRequest(url: URL(string: "http://192.168.0.4/f")!));
 }
