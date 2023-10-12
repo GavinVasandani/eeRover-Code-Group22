@@ -1,5 +1,5 @@
 # eeRover-Code-Group22
-Code for EE Rover
+Code for EE Rover mobile app to move rover and control minerals.
 
 Video showing the developed app and the communication with an ESP-32 Microcontroller
 
